@@ -1,20 +1,21 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+GitHub README: Professional Introduction
+Toronto Air Systems: AI Dispatcher Fleet
+Hyper-Local AI Voice Agents for GTA Heritage Homes & 2026 Rebate Capture.
 
-# Run and deploy your AI Studio app
+This repository contains the deployment architecture and system logic for Marcus, a specialized AI Voice Dispatcher designed for the high-ticket heritage home market in the Greater Toronto Area.
 
-This contains everything you need to run your app locally.
+Key Features
+GTA-Specific Knowledge: Marcus is trained on Toronto’s unique housing stock, including hydronic boilers, steam radiators, and heritage HVAC conversions.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1xW7C6ON6nXvDtyDhXZyu01sUg-tE_gtk
+2026 Rebate Engine: Real-time logic for the Home Renovation Savings (HRS) Program, identifying $7,500+ CCASHP (Cold Climate Air Source Heat Pump) opportunities for electrically heated homes.
 
-## Run Locally
+Emergency Triage: Automated "No-Heat" prioritization with a 4-hour response guarantee logic.
 
-**Prerequisites:**  Node.js
+Seamless CRM Sync: Direct-to-sheet lead logging with automated Google Review link generation.
 
+Tech Stack
+Core Model: Gemini 3 Flash (Optimized for low-latency voice)
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Integration: Google AI Studio (Native Voice Web Apps)
+
+Database: Google Sheets / ServiceTitan Webhooks (via Zapier)
