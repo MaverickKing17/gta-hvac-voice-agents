@@ -33,7 +33,7 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
             ctx.beginPath();
             ctx.moveTo(0, centerY);
             ctx.lineTo(width, centerY);
-            ctx.strokeStyle = 'rgba(16, 185, 129, 0.2)'; // Emerald 500 low opacity
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.2)'; // Sky 500 low opacity
             ctx.lineWidth = 1;
             ctx.setLineDash([5, 5]);
             ctx.stroke();
@@ -53,8 +53,8 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
             ctx.lineWidth = isSpeaking ? 2 : 1;
             
             if (isSpeaking) {
-                // Agent Speaking: Mix of Emerald and Cyan
-                const color = i % 2 === 0 ? '16, 185, 129' : '6, 182, 212'; // Emerald vs Cyan
+                // Agent Speaking: Mix of Sky and Indigo
+                const color = i % 2 === 0 ? '14, 165, 233' : '99, 102, 241'; // Sky vs Indigo
                 ctx.strokeStyle = `rgba(${color}, ${0.6 + (i * 0.1)})`;
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = `rgba(${color}, 0.5)`;

@@ -16,8 +16,8 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
   return (
     <div className="flex flex-col h-full bg-slate-950/50 rounded-xl border border-white/10 overflow-hidden backdrop-blur-md">
       <div className="bg-white/5 px-4 py-3 border-b border-white/5 flex items-center gap-2">
-        <Terminal className="w-4 h-4 text-emerald-400" />
-        <span className="text-xs font-mono text-emerald-400/80 tracking-widest uppercase">Live Feed</span>
+        <Terminal className="w-4 h-4 text-sky-400" />
+        <span className="text-xs font-mono text-sky-400/80 tracking-widest uppercase">Live Feed</span>
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm custom-scrollbar">
@@ -30,7 +30,7 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role !== 'user' && (
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'system' ? 'bg-slate-800 text-slate-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'system' ? 'bg-slate-800 text-slate-400' : 'bg-sky-500/20 text-sky-400'}`}>
                 {msg.role === 'system' ? <Terminal className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
               </div>
             )}
@@ -40,7 +40,7 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
                 ? 'bg-slate-800 text-slate-200 border border-slate-700' 
                 : msg.role === 'system' 
                   ? 'bg-transparent text-slate-500 text-xs w-full'
-                  : 'bg-emerald-950/30 text-emerald-100 border border-emerald-500/30'
+                  : 'bg-sky-950/30 text-sky-100 border border-sky-500/30'
             }`}>
               {msg.text}
             </div>
