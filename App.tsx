@@ -1,14 +1,15 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGeminiLive } from './hooks/useGeminiLive';
 import { WaveVisualizer } from './components/WaveVisualizer';
 import { InfoPanel } from './components/InfoPanel';
 import { Transcript } from './components/Transcript';
 import { LeadDetails } from './types';
-import { MicOff, PhoneCall, AlertCircle, Snowflake, Loader2, Activity, Globe, Shield } from 'lucide-react';
+import { MicOff, PhoneCall, AlertCircle, Snowflake, Loader2, Activity, Globe, Shield, Clock } from 'lucide-react';
 
 const App: React.FC = () => {
   const [leadDetails, setLeadDetails] = useState<Partial<LeadDetails>>({});
+  const [sessionDuration, setSessionDuration] = useState<number>(0);
   
   const handleLeadUpdate = (details: Partial<LeadDetails>) => {
     setLeadDetails(prev => ({ ...prev, ...details }));
@@ -26,6 +27,31 @@ const App: React.FC = () => {
   } = useGeminiLive({
     onLeadCaptured: handleLeadUpdate
   });
+
+  // Timer logic for active dispatch link
+  useEffect(() => {
+    let interval: number | undefined;
+    
+    if (isConnected) {
+      const startTime = Date.now();
+      interval = window.setInterval(() => {
+        setSessionDuration(Math.floor((Date.now() - startTime) / 1000));
+      }, 1000);
+    } else {
+      setSessionDuration(0);
+      if (interval) clearInterval(interval);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isConnected]);
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-200 font-sans selection:bg-blue-500/30 overflow-hidden relative">
@@ -56,6 +82,14 @@ const App: React.FC = () => {
            
            {isConnected && (
              <div className="hidden xl:flex items-center gap-10 ml-12 pl-12 border-l border-white/10">
+                <div className="flex flex-col">
+                    <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                      <Clock className="w-2 h-2" /> Link Duration
+                    </span>
+                    <span className="text-xs font-mono font-bold text-blue-400 tabular-nums">
+                      {formatDuration(sessionDuration)}
+                    </span>
+                </div>
                 <div className="flex flex-col">
                     <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1 flex items-center gap-1.5">
                       <Globe className="w-2 h-2" /> Global Sync
