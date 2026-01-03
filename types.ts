@@ -1,3 +1,4 @@
+
 export interface AudioState {
   isPlaying: boolean;
   isListening: boolean;
@@ -10,6 +11,8 @@ export interface LeadDetails {
   address?: string;
   type: 'emergency' | 'rebate' | 'general';
   heatingSource?: 'gas' | 'oil' | 'electric';
+  agentPersona: 'sarah' | 'mike';
+  marketType: 'residential' | 'commercial';
   status: 'collecting' | 'complete';
 }
 
@@ -22,6 +25,7 @@ export interface ServiceMetric {
 export interface Message {
   id: string;
   role: 'user' | 'agent' | 'system';
+  agentName?: string;
   text: string;
   timestamp: Date;
   isPartial?: boolean;

@@ -13,13 +13,18 @@ import {
   Activity, 
   ShieldCheck, 
   Clock, 
-  Map as MapIcon,
-  Navigation,
-  HardHat
+  UserCircle2,
+  AlertTriangle,
+  Building2,
+  Home,
+  ChevronRight
 } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [leadDetails, setLeadDetails] = useState<Partial<LeadDetails>>({});
+  const [leadDetails, setLeadDetails] = useState<Partial<LeadDetails>>({
+    agentPersona: 'sarah',
+    marketType: 'residential'
+  });
   const [sessionDuration, setSessionDuration] = useState<number>(0);
   
   const handleLeadUpdate = (details: Partial<LeadDetails>) => {
@@ -37,6 +42,8 @@ const App: React.FC = () => {
   } = useGeminiLive({
     onLeadCaptured: handleLeadUpdate
   });
+
+  const isEmergency = leadDetails.agentPersona === 'mike' || leadDetails.type === 'emergency';
 
   useEffect(() => {
     let interval: number | undefined;
@@ -59,60 +66,67 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-[#001f3f] font-sans selection:bg-blue-100 overflow-hidden relative">
+    <div className={`min-h-screen transition-colors duration-1000 font-sans selection:bg-blue-100 overflow-hidden relative ${isEmergency ? 'bg-rose-50' : 'bg-slate-50'}`}>
       
       {/* Brand Accent Bar */}
-      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#003366] via-[#004d99] to-[#cc0000] z-[60]" />
+      <div className={`absolute top-0 left-0 w-full h-2 z-[60] transition-all duration-1000 ${isEmergency ? 'bg-[#cc0000]' : 'bg-[#003366]'}`} />
       
-      {/* Stylized GTA Grid Map Background */}
+      {/* Dynamic Background Grid */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ 
-        backgroundImage: `radial-gradient(#003366 1px, transparent 1px)`, 
-        backgroundSize: '40px 40px' 
+        backgroundImage: `radial-gradient(${isEmergency ? '#cc0000' : '#003366'} 1.5px, transparent 1.5px)`, 
+        backgroundSize: '30px 30px' 
       }} />
 
-      {/* Corporate Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-24 border-b border-slate-200 bg-white/95 backdrop-blur-md px-12 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-8">
-           <div className="flex items-center gap-4 border-r border-slate-200 pr-8">
-              <div className="w-12 h-12 rounded-xl bg-[#003366] flex items-center justify-center shadow-lg">
-                 <Snowflake className="w-7 h-7 text-white" />
+        <div className="flex items-center gap-10">
+           <div className="flex items-center gap-4 border-r border-slate-200 pr-10">
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-colors duration-700 ${isEmergency ? 'bg-[#cc0000]' : 'bg-[#003366]'}`}>
+                 <Snowflake className="w-8 h-8 text-white" />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-xl font-black tracking-tight text-[#003366] uppercase italic leading-none">
-                    Toronto Air <span className="text-[#cc0000] font-bold tracking-normal not-italic">Systems</span>
+                <h1 className="text-2xl font-black tracking-tighter text-[#001f3f] uppercase italic leading-none">
+                    Toronto Air <span className={`${isEmergency ? 'text-[#cc0000]' : 'text-[#003366]'} font-bold tracking-normal not-italic`}>Systems</span>
                 </h1>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1.5">Heritage Home Specialist</span>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2">Intelligence Operations Center</span>
               </div>
            </div>
            
-           <div className="hidden lg:flex items-center gap-6">
-              <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-full border border-emerald-100">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wider">Melissa Core v2.5 Online</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-400">
-                <MapIcon className="w-3.5 h-3.5" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">Active in: GTA & Golden Horseshoe</span>
-              </div>
+           {/* Persona Switcher UI */}
+           <div className="flex items-center gap-4 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/60">
+              <AgentPill 
+                name="Sarah" 
+                role="Comfort" 
+                active={leadDetails.agentPersona === 'sarah'} 
+                icon={<UserCircle2 className="w-3.5 h-3.5" />}
+                color="blue"
+              />
+              <ChevronRight className="w-3 h-3 text-slate-300" />
+              <AgentPill 
+                name="Mike" 
+                role="Dispatch" 
+                active={leadDetails.agentPersona === 'mike'} 
+                icon={<AlertTriangle className="w-3.5 h-3.5" />}
+                color="red"
+              />
            </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-8">
            {isConnected && (
-             <div className="flex items-center gap-10 pr-10 border-r border-slate-200">
+             <div className="flex items-center gap-12 pr-12 border-r border-slate-200">
                 <div className="text-right">
-                    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center justify-end gap-1.5">
-                      <Clock className="w-3 h-3 text-[#003366]" /> Call Timer
+                    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center justify-end gap-2">
+                      <Clock className={`w-3.5 h-3.5 ${isEmergency ? 'text-[#cc0000]' : 'text-[#003366]'}`} /> Call Logic Time
                     </div>
-                    <div className="text-lg font-mono font-bold text-[#003366] tabular-nums">
+                    <div className="text-xl font-mono font-black text-[#001f3f] tabular-nums">
                       {formatDuration(sessionDuration)}
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center justify-end gap-1.5">
-                      <ShieldCheck className="w-3 h-3 text-emerald-500" /> Security
+                    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center justify-end gap-2">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Lead Auth
                     </div>
-                    <div className="text-sm font-bold text-emerald-600 uppercase">Encrypted</div>
+                    <div className="text-xs font-black text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">Verified</div>
                 </div>
              </div>
            )}
@@ -120,95 +134,85 @@ const App: React.FC = () => {
            <button 
               disabled={isConnecting}
               onClick={() => isConnected ? disconnect() : connect()}
-              className={`group flex items-center gap-3 px-10 py-4 rounded-full font-black text-[12px] transition-all active:scale-95 uppercase tracking-[0.2em] shadow-xl ${
+              className={`group flex items-center gap-3 px-10 py-4 rounded-2xl font-black text-[12px] transition-all active:scale-95 uppercase tracking-[0.2em] shadow-2xl ${
                   isConnected 
-                  ? 'bg-white text-[#cc0000] border-2 border-[#cc0000] hover:bg-[#cc0000]/5' 
+                  ? 'bg-white text-[#cc0000] border-2 border-[#cc0000] hover:bg-rose-50' 
                   : isConnecting
-                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                    : 'bg-[#003366] text-white hover:bg-[#002244] hover:shadow-[#003366]/30'
+                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed border-slate-200 border-2'
+                    : 'bg-[#003366] text-white hover:bg-[#002244]'
               }`}
            >
-              {isConnecting ? <Loader2 className="w-4 h-4 animate-spin" /> : isConnected ? <MicOff className="w-4 h-4" /> : <PhoneCall className="w-4 h-4" />}
-              {isConnecting ? 'Initializing Link...' : isConnected ? 'Disconnect Agent' : 'Establish Dispatch Link'}
+              {isConnecting ? <Loader2 className="w-5 h-5 animate-spin" /> : isConnected ? <MicOff className="w-5 h-5" /> : <PhoneCall className="w-5 h-5" />}
+              {isConnecting ? 'Linking...' : isConnected ? 'Kill Link' : 'Establish Dispatch'}
            </button>
         </div>
       </header>
 
       <main className="pt-24 h-screen flex relative z-10">
         
-        {/* Left: Dispatch Center */}
+        {/* Left: Communication Hub */}
         <section className="flex-1 flex flex-col border-r border-slate-200 bg-white/40">
             
-            {/* Precision Oscilloscope Section */}
-            <div className="h-[40%] relative flex items-center justify-center overflow-hidden border-b border-slate-200 bg-[#001f3f]">
-                <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ 
-                  backgroundImage: `linear-gradient(#ffffff11 1px, transparent 1px), linear-gradient(90deg, #ffffff11 1px, transparent 1px)`, 
-                  backgroundSize: '20px 20px' 
+            {/* Persona-Driven Visualizer */}
+            <div className={`h-[42%] relative flex items-center justify-center overflow-hidden border-b border-slate-200 transition-colors duration-1000 ${isEmergency ? 'bg-[#1a0505]' : 'bg-[#001f3f]'}`}>
+                <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ 
+                  backgroundImage: `linear-gradient(#ffffff08 1.5px, transparent 1.5px), linear-gradient(90deg, #ffffff08 1.5px, transparent 1.5px)`, 
+                  backgroundSize: '25px 25px' 
                 }} />
                 
                 <div className="w-full h-full relative z-10">
-                    <WaveVisualizer isConnected={isConnected} isSpeaking={isSpeaking} volume={volume} />
+                    <WaveVisualizer isConnected={isConnected} isSpeaking={isSpeaking} volume={volume} isEmergency={isEmergency} />
                 </div>
                 
-                <div className="absolute top-6 left-8 flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-md">
-                   <Activity className="w-4 h-4 text-[#0099cc] animate-pulse" />
-                   <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.3em]">Signal Diagnostic</span>
+                <div className={`absolute top-8 left-10 flex items-center gap-4 px-5 py-2.5 rounded-xl backdrop-blur-xl border ${isEmergency ? 'bg-rose-500/10 border-rose-500/20' : 'bg-blue-500/10 border-blue-500/20'}`}>
+                   <Activity className={`w-4 h-4 animate-pulse ${isEmergency ? 'text-rose-500' : 'text-[#0099cc]'}`} />
+                   <span className="text-[10px] font-black text-white/80 uppercase tracking-[0.4em]">Biometric Feedback</span>
                 </div>
 
-                <div className="absolute bottom-6 right-8 flex items-center gap-6">
-                    <div className="flex flex-col items-end">
-                      <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest">Gain Level</span>
-                      <div className="h-1 w-24 bg-white/10 rounded-full mt-1 overflow-hidden">
-                        <div className="h-full bg-[#0099cc]" style={{ width: `${Math.min(100, volume * 1.5)}%` }} />
-                      </div>
+                {isEmergency && (
+                  <div className="absolute top-8 right-10 animate-pulse">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded-lg text-[10px] font-black uppercase tracking-widest shadow-2xl">
+                      <AlertTriangle className="w-4 h-4" />
+                      Priority Dispatch Triggered
                     </div>
-                </div>
+                  </div>
+                )}
             </div>
 
-            {/* Live Transcription Log */}
-            <div className="flex-1 flex flex-col min-h-0 bg-white/80">
-                <Transcript messages={messages} />
+            {/* Transcript Log */}
+            <div className="flex-1 flex flex-col min-h-0 bg-white/80 overflow-hidden">
+                <Transcript messages={messages} persona={leadDetails.agentPersona} />
             </div>
         </section>
 
-        {/* Right: Technical Lead & Fleet Data */}
-        <aside className="w-[580px] flex flex-col bg-[#f8fafc] border-l border-slate-200 shadow-2xl z-20 overflow-hidden">
+        {/* Right: Technical Lead & Market Data */}
+        <aside className="w-[620px] flex flex-col bg-[#f1f5f9] border-l border-slate-200 shadow-[-20px_0_50px_-20px_rgba(0,0,0,0.05)] z-20 overflow-hidden">
             <div className="flex-1 overflow-y-auto custom-scrollbar">
                 <InfoPanel lead={leadDetails} isConnected={isConnected} />
                 
-                {/* Fleet & Logistics Widget */}
+                {/* Market Segment Widget */}
                 <div className="px-12 pb-12">
-                   <div className="p-8 bg-[#001f3f] rounded-3xl shadow-2xl relative overflow-hidden group border border-[#003366]">
-                      <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-[60px]" />
+                   <div className="p-8 bg-white rounded-3xl shadow-xl border border-slate-200 relative overflow-hidden">
+                      <div className="flex items-center justify-between mb-8">
+                         <div>
+                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Market Segment</div>
+                            <div className="text-xl font-black text-[#001f3f] uppercase italic">Diagnostic Context</div>
+                         </div>
+                         <div className={`p-4 rounded-2xl transition-colors duration-700 ${leadDetails.marketType === 'commercial' ? 'bg-[#003366] text-white' : 'bg-slate-100 text-slate-400'}`}>
+                            {leadDetails.marketType === 'commercial' ? <Building2 className="w-6 h-6" /> : <Home className="w-6 h-6" />}
+                         </div>
+                      </div>
                       
-                      <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-8">
-                           <div>
-                              <h4 className="text-[10px] font-black text-[#0099cc] uppercase tracking-[0.3em] mb-2">Fleet Intelligence</h4>
-                              <div className="text-xl font-bold text-white uppercase italic tracking-tighter">GTA Logistics Status</div>
-                           </div>
-                           <HardHat className="w-8 h-8 text-white/10" />
-                        </div>
-                        
-                        <div className="space-y-6">
-                           <LogisticItem label="Available Technicians" value="14 Units" progress={85} color="emerald" />
-                           <LogisticItem label="Emergency Response Load" value="High" progress={70} color="amber" />
-                           <LogisticItem label="Avg. Arrival Window" value="2.4 Hours" progress={92} color="blue" />
-                        </div>
+                      <div className="grid grid-cols-2 gap-4">
+                         <div className={`p-6 rounded-2xl border-2 transition-all cursor-default ${leadDetails.marketType === 'residential' ? 'border-[#003366] bg-blue-50/50' : 'border-slate-100 bg-white'}`}>
+                            <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Portfolio</div>
+                            <div className="text-sm font-bold text-[#001f3f]">Residential HVAC</div>
+                         </div>
+                         <div className={`p-6 rounded-2xl border-2 transition-all cursor-default ${leadDetails.marketType === 'commercial' ? 'border-[#003366] bg-blue-50/50' : 'border-slate-100 bg-white'}`}>
+                            <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Portfolio</div>
+                            <div className="text-sm font-bold text-[#001f3f]">Commercial/Industrial</div>
+                         </div>
                       </div>
-                   </div>
-                   
-                   <div className="mt-8 flex items-center justify-between p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 bg-[#003366] rounded-xl text-white">
-                          <Navigation className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-black text-[#003366] uppercase tracking-widest mb-0.5">Coverage Lock</div>
-                          <div className="text-sm font-bold text-slate-600">All GTA Zones Active</div>
-                        </div>
-                      </div>
-                      <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Live 24/7</span>
                    </div>
                 </div>
             </div>
@@ -226,23 +230,19 @@ const App: React.FC = () => {
   );
 };
 
-const LogisticItem = ({ label, value, progress, color }: any) => {
-  const colors: any = {
-    emerald: 'bg-emerald-500',
-    amber: 'bg-amber-500',
-    blue: 'bg-blue-500'
-  };
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-end">
-        <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">{label}</span>
-        <span className="text-xs font-bold text-white">{value}</span>
-      </div>
-      <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-        <div className={`h-full transition-all duration-1000 ${colors[color]}`} style={{ width: `${progress}%` }} />
-      </div>
+const AgentPill = ({ name, role, active, icon, color }: any) => (
+  <div className={`flex items-center gap-2.5 px-4 py-2 rounded-xl transition-all duration-500 ${
+    active 
+    ? (color === 'red' ? 'bg-rose-600 text-white shadow-lg scale-105' : 'bg-[#003366] text-white shadow-lg scale-105')
+    : 'text-slate-400 opacity-60'
+  }`}>
+    {icon}
+    <div className="flex flex-col leading-none">
+       <span className="text-[9px] font-black uppercase tracking-widest">{name}</span>
+       <span className="text-[7px] font-bold uppercase tracking-tight mt-0.5 opacity-60">{role}</span>
     </div>
-  );
-};
+    {active && <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+  </div>
+);
 
 export default App;

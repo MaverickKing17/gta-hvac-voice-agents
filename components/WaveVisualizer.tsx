@@ -5,9 +5,10 @@ interface WaveVisualizerProps {
   isConnected: boolean;
   isSpeaking: boolean;
   volume: number; 
+  isEmergency: boolean;
 }
 
-export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isSpeaking, volume }) => {
+export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isSpeaking, volume, isEmergency }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
   useEffect(() => {
@@ -31,7 +32,6 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
         ctx.clearRect(0, 0, w, h);
         
         if (!isConnected) {
-            // Static Flatline
             ctx.beginPath();
             ctx.moveTo(0, h/2);
             ctx.lineTo(w, h/2);
@@ -41,11 +41,10 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
             return;
         }
 
-        offset += 4;
+        offset += isEmergency ? 8 : 4;
         const midY = h / 2;
         const volScale = (volume / 255);
 
-        // Draw multiple diagnostic waves
         const drawWave = (color: string, speed: number, amplitude: number, lineWidth: number, opacity: number) => {
           ctx.beginPath();
           ctx.strokeStyle = color;
@@ -53,8 +52,8 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
           ctx.globalAlpha = opacity;
           
           for (let x = 0; x < w; x++) {
-            const freq = 0.01 + (volScale * 0.02);
-            const y = midY + Math.sin((x + offset * speed) * freq) * (amplitude + (volScale * 120));
+            const freq = (isEmergency ? 0.02 : 0.01) + (volScale * 0.03);
+            const y = midY + Math.sin((x + offset * speed) * freq) * (amplitude + (volScale * 140));
             if (x === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
           }
@@ -62,15 +61,17 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
           ctx.globalAlpha = 1;
         };
 
-        // Precision Layers
-        drawWave('#0099cc', 1, 10, 2, 0.8);  // Main Signal
-        drawWave('#ffffff', 1.5, 5, 1, 0.2); // Noise floor
-        drawWave('#003366', 0.5, 15, 4, 0.3); // Deep Resonance
+        const primaryColor = isEmergency ? '#cc0000' : '#0099cc';
+        const secondaryColor = isEmergency ? '#ff4444' : '#ffffff';
+        const baseColor = isEmergency ? '#800000' : '#003366';
 
-        // Core Pulse
+        drawWave(primaryColor, 1, isEmergency ? 20 : 10, 2.5, 0.8);
+        drawWave(secondaryColor, 1.5, 5, 1, 0.2);
+        drawWave(baseColor, 0.5, 15, 5, 0.3);
+
         if (isSpeaking) {
-          const coreGrad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 100 + volScale * 200);
-          coreGrad.addColorStop(0, 'rgba(0, 153, 204, 0.05)');
+          const coreGrad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 120 + volScale * 240);
+          coreGrad.addColorStop(0, isEmergency ? 'rgba(204, 0, 0, 0.1)' : 'rgba(0, 153, 204, 0.08)');
           coreGrad.addColorStop(1, 'transparent');
           ctx.fillStyle = coreGrad;
           ctx.fillRect(0, 0, w, h);
@@ -81,7 +82,7 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
     
     render();
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isConnected, isSpeaking, volume]);
+  }, [isConnected, isSpeaking, volume, isEmergency]);
   
   return <canvas ref={canvasRef} className="w-full h-full cursor-default" />;
 };
