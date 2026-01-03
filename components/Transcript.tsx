@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Message } from '../types';
-import { Bot, User, Terminal, CheckCircle2, Sparkles, Cpu } from 'lucide-react';
+import { Bot, User, Terminal, CheckCircle2, Sparkles, Cpu, ShieldCheck } from 'lucide-react';
 
 interface TranscriptProps {
   messages: Message[];
@@ -21,14 +21,14 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
           label: 'INCOMING CALLER',
           icon: <User className="w-4 h-4" />,
           avatarClass: 'bg-white text-slate-400 border border-slate-200 shadow-sm',
-          contentClass: 'text-slate-600 font-medium bg-white border border-slate-200/50 p-5 rounded-2xl shadow-sm'
+          contentClass: 'text-slate-600 font-medium bg-white border border-slate-200/50 p-7 rounded-3xl shadow-sm'
         };
       case 'agent':
         return {
           label: 'DISPATCH: MELISSA',
           icon: <Bot className="w-4 h-4" />,
-          avatarClass: 'bg-blue-600 text-white shadow-[0_5px_15px_rgba(37,99,235,0.3)]',
-          contentClass: 'text-slate-900 font-semibold bg-blue-50/50 border border-blue-100 p-5 rounded-2xl shadow-[0_10px_20px_-10px_rgba(59,130,246,0.1)]'
+          avatarClass: 'bg-blue-600 text-white shadow-[0_8px_20px_rgba(37,99,235,0.3)] ring-4 ring-blue-50',
+          contentClass: 'text-slate-900 font-semibold bg-blue-50/80 border border-blue-100 p-7 rounded-3xl shadow-[0_20px_40px_-15px_rgba(59,130,246,0.2)] backdrop-blur-sm'
         };
       case 'system':
         return {
@@ -65,7 +65,7 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
                  <div className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-300 group-hover:scale-110 relative ${config.avatarClass}`}>
                    {config.icon}
                    {msg.role === 'agent' && (
-                     <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                     <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white shadow-sm animate-pulse">
                         <Sparkles className="w-2 h-2 text-white" />
                      </div>
                    )}
@@ -75,19 +75,24 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
               
               {/* Content Column */}
               <div className="flex-1 pb-4">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-4">
                    <div className="flex items-center gap-4">
                       <span className={`text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-2 ${msg.role === 'agent' ? 'text-blue-600' : 'text-slate-400'}`}>
-                        {msg.role === 'agent' && <div className="w-1.5 h-1.5 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.6)]" />}
+                        {msg.role === 'agent' && (
+                          <div className="flex items-center gap-2 px-2 py-0.5 bg-blue-600 rounded-md mr-1 shadow-sm">
+                            <ShieldCheck className="w-2.5 h-2.5 text-white" />
+                            <span className="text-[8px] text-white font-black">AI CORE</span>
+                          </div>
+                        )}
                         {config.label}
                       </span>
                    </div>
-                   <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">
+                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                      {new Date(msg.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}
                    </span>
                 </div>
                 
-                <div className={`text-[15px] leading-[1.7] tracking-tight transition-all duration-500 ${config.contentClass}`}>
+                <div className={`text-[18px] leading-[1.9] tracking-normal transition-all duration-500 ${config.contentClass}`}>
                   {msg.text}
                 </div>
               </div>
