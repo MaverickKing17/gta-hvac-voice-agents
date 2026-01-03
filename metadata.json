@@ -1,5 +1,5 @@
 {
-  "name": "Toronto Air Systems - Marcus AI Dispatcher",
+  "name": "Toronto Air Systems - Melissa AI Dispatcher",
   "description": "A master-level AI voice dispatcher for heritage home heating and rebate qualification, powered by Gemini Live API.",
   "requestFramePermissions": [
     "microphone"

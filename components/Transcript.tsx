@@ -25,7 +25,7 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
         };
       case 'agent':
         return {
-          label: 'DISPATCH: MARCUS',
+          label: 'DISPATCH: MELISSA',
           icon: <Bot className="w-4 h-4" />,
           avatarClass: 'bg-blue-600 text-white shadow-[0_0_25px_rgba(37,99,235,0.4)] border border-blue-400 ring-4 ring-blue-500/10',
           contentClass: 'text-white font-semibold bg-gradient-to-r from-blue-600/[0.08] to-transparent border border-blue-500/20 p-5 rounded-2xl shadow-[inset_0_0_40px_rgba(37,99,235,0.05)]'
@@ -55,7 +55,6 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
         
         {messages.map((msg, idx) => {
           const config = getRoleConfig(msg.role);
-          const isLatest = idx === messages.length - 1;
 
           return (
             <div key={msg.id} className="flex gap-8 animate-in fade-in slide-in-from-left-4 duration-700 group">
