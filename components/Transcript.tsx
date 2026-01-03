@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Message } from '../types';
-import { Bot, User, Terminal, Sparkles } from 'lucide-react';
+import { Bot, User, Terminal, Sparkles, Cpu } from 'lucide-react';
 
 interface TranscriptProps {
   messages: Message[];
@@ -27,21 +27,25 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages }) => {
         
         {messages.map((msg) => (
           <div key={msg.id} className={`flex flex-col gap-3 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-            <div className={`flex items-center gap-3 mb-1 opacity-60 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center bg-white/5 border border-white/10 ${msg.role === 'agent' ? 'text-sky-400' : 'text-slate-500'}`}>
-                {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : msg.role === 'system' ? <Terminal className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
+            <div className={`flex items-center gap-3 mb-1 opacity-70 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors shadow-sm ${
+                msg.role === 'agent' 
+                  ? 'bg-sky-500/20 border border-sky-500/30 text-sky-400 shadow-[0_0_8px_rgba(14,165,233,0.3)]' 
+                  : 'bg-white/5 border border-white/10 text-slate-500'
+              }`}>
+                {msg.role === 'user' ? <User className="w-3.5 h-3.5" /> : msg.role === 'system' ? <Terminal className="w-3.5 h-3.5" /> : <Cpu className="w-3.5 h-3.5" />}
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] font-sans">
+              <span className={`text-[10px] font-black uppercase tracking-[0.2em] font-sans ${msg.role === 'agent' ? 'text-sky-400' : 'text-slate-500'}`}>
                 {msg.role === 'user' ? 'Lead Subject' : msg.role === 'system' ? 'Kernel Event' : 'Marcus AI Agent'}
               </span>
             </div>
             
             <div className={`max-w-[85%] px-6 py-4 rounded-[1.5rem] transition-all duration-700 animate-in fade-in slide-in-from-bottom-4 shadow-xl leading-relaxed ${
               msg.role === 'user' 
-                ? 'bg-sky-500 text-white border-0 rounded-tr-none' 
+                ? 'bg-sky-500 text-white border-0 rounded-tr-none shadow-sky-500/10' 
                 : msg.role === 'system' 
                   ? 'bg-transparent text-slate-500 text-xs italic border-l-2 border-slate-800 rounded-none'
-                  : 'bg-white/[0.05] text-slate-100 border border-white/10 rounded-tl-none backdrop-blur-md'
+                  : 'bg-sky-950/30 text-slate-100 border border-sky-500/20 rounded-tl-none backdrop-blur-md shadow-[0_0_20px_rgba(14,165,233,0.05)]'
             }`}>
               {msg.text}
             </div>

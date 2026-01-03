@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useGeminiLive } from './hooks/useGeminiLive';
 import { WaveVisualizer } from './components/WaveVisualizer';
@@ -5,7 +6,7 @@ import { InfoPanel } from './components/InfoPanel';
 import { DashboardCharts } from './components/DashboardCharts';
 import { Transcript } from './components/Transcript';
 import { LeadDetails } from './types';
-import { MicOff, PhoneCall, AlertCircle, Snowflake, Activity, Sliders, Cpu, History, Zap } from 'lucide-react';
+import { MicOff, PhoneCall, AlertCircle, Snowflake, Activity, Sliders, Cpu, History, Zap, Loader2 } from 'lucide-react';
 
 const App: React.FC = () => {
   const [leadDetails, setLeadDetails] = useState<Partial<LeadDetails>>({});
@@ -18,6 +19,7 @@ const App: React.FC = () => {
     connect, 
     disconnect, 
     isConnected, 
+    isConnecting,
     isSpeaking, 
     volume, 
     error,
@@ -68,15 +70,24 @@ const App: React.FC = () => {
              </div>
              <div className="h-10 w-px bg-white/10" />
              <button 
+                disabled={isConnecting}
                 onClick={() => isConnected ? disconnect() : connect()}
                 className={`group flex items-center gap-4 px-8 py-4 rounded-[1.5rem] font-black text-sm transition-all shadow-xl active:scale-95 border-2 ${
                     isConnected 
                     ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 hover:bg-rose-500/20' 
-                    : 'bg-sky-500 border-sky-400 text-white hover:bg-sky-400 hover:shadow-sky-500/30'
+                    : isConnecting
+                      ? 'bg-slate-800 border-slate-700 text-slate-400 cursor-not-allowed'
+                      : 'bg-sky-500 border-sky-400 text-white hover:bg-sky-400 hover:shadow-sky-500/30'
                 }`}
              >
-                {isConnected ? <MicOff className="w-5 h-5" /> : <PhoneCall className="w-5 h-5 group-hover:rotate-12 transition-transform" />}
-                {isConnected ? 'TERMINATE LINK' : 'ESTABLISH LINK'}
+                {isConnecting ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : isConnected ? (
+                  <MicOff className="w-5 h-5" />
+                ) : (
+                  <PhoneCall className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                )}
+                {isConnecting ? 'CONNECTING...' : isConnected ? 'TERMINATE LINK' : 'ESTABLISH LINK'}
              </button>
           </div>
         </div>
@@ -106,7 +117,7 @@ const App: React.FC = () => {
                           <span className="text-xs font-black text-sky-500/60 uppercase tracking-[0.4em]">Neural Uplink</span>
                        </div>
                        <h2 className="text-4xl font-black text-white tracking-tighter italic uppercase leading-tight">
-                          {isSpeaking ? 'Marcus Processing' : isConnected ? 'Live Reception' : 'Engine Standby'}
+                          {isSpeaking ? 'Marcus Processing' : isConnected ? 'Live Reception' : isConnecting ? 'Initializing Neural Field' : 'Engine Standby'}
                        </h2>
                     </div>
 
@@ -130,7 +141,7 @@ const App: React.FC = () => {
                     {/* Telemetry Footer */}
                     <div className="absolute bottom-12 left-12 right-12 flex justify-between items-end border-t border-white/5 pt-8">
                         <div className="flex gap-12">
-                            <TelemetryItem label="Cognitive Load" value="14.2%" />
+                            <TelemetryItem label="Cognitive Load" value={isConnecting ? "Calculating..." : "14.2%"} />
                             <TelemetryItem label="Voice Fidelity" value="High-Res" />
                             <TelemetryItem label="Encryption" value="AES-4096" />
                         </div>
@@ -153,8 +164,8 @@ const App: React.FC = () => {
                               <span className="text-xs font-black uppercase tracking-[0.3em] text-slate-400">Tactical Feed</span>
                            </div>
                            <div className="flex items-center gap-1.5">
-                              <span className="text-[10px] font-bold text-emerald-400 uppercase">Streaming</span>
-                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                              <span className="text-[10px] font-bold text-emerald-400 uppercase">{isConnected ? 'Streaming' : 'Offline'}</span>
+                              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-700'}`} />
                            </div>
                         </div>
                         <div className="flex-1 overflow-hidden">
