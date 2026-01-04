@@ -11,11 +11,7 @@ import {
   CheckCircle2, 
   BadgeAlert,
   Home,
-  Waves,
-  TrendingUp,
   Building2,
-  HardHat,
-  Database,
   Navigation,
   FileText
 } from 'lucide-react';
@@ -28,7 +24,8 @@ interface InfoPanelProps {
 export const InfoPanel: React.FC<InfoPanelProps> = ({ lead, isConnected }) => {
   const isHeritage = lead.address?.toLowerCase().includes('heritage') || 
                      lead.heatingSource === 'oil';
-  const isEmergency = lead.agentPersona === 'mike' || lead.type === 'emergency';
+  const isMarcus = lead.agentPersona === 'marcus';
+  const isEmergency = isMarcus || lead.type === 'emergency';
   const isCommercial = lead.marketType === 'commercial';
 
   return (

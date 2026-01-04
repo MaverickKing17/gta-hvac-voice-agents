@@ -11,7 +11,7 @@ export interface LeadDetails {
   address?: string;
   type: 'emergency' | 'rebate' | 'general';
   heatingSource?: 'gas' | 'oil' | 'electric';
-  agentPersona: 'sarah' | 'mike';
+  agentPersona: 'sarah' | 'marcus';
   marketType: 'residential' | 'commercial';
   status: 'collecting' | 'complete';
 }
