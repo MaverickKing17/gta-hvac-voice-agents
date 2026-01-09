@@ -117,9 +117,9 @@ const App: React.FC = () => {
                
                <h2 className="text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[0.85] uppercase italic">
                   {isEmergency ? (
-                    <>Emergency <span className="text-rose-600 not-italic">Response</span><br/>In Under 2 Hours</>
+                    <>No Heat? <span className="text-rose-600 not-italic">No Stress.</span><br/>On-Site In 2 Hours Or Less.</>
                   ) : (
-                    <>Heritage Home <span className="text-blue-500 not-italic">Comfort</span><br/>Modern Savings</>
+                    <>Stop Overpaying To <span className="text-blue-500 not-italic">Heat Your</span><br/>Drafty Toronto Home.</>
                   )}
                </h2>
 
